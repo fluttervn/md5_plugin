@@ -1,8 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:md5_plugin/md5_plugin.dart';
 import 'package:path/path.dart';
@@ -16,7 +17,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _md5SumPlugin = 'Unknown';
+  String _md5SumDart = 'Unknown';
 
   @override
   void initState() {
@@ -26,19 +28,33 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
+    String md5SumPlugin;
+    String md5SumDart;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      Directory directory = await getApplicationDocumentsDirectory();
-      var dbPath = join(directory.path, "image.jpeg");
-      ByteData data = await rootBundle.load("assets/image.jpeg");
+      //Create image
+      var directory = await getApplicationDocumentsDirectory();
+      var dbPath = join(directory.path, 'image.jpg');
+      var data = await rootBundle.load('assets/image.jpg');
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(dbPath).writeAsBytes(bytes);
+      print('path: $dbPath');
 
-      platformVersion = await Md5Plugin.getMD5WithPath(dbPath);
+      //Get md5 sum from Crypto
+      var date = DateTime.now();
+      md5SumDart = await calculateMD5SumAsyncWithCrypto(dbPath);
+      md5SumDart +=
+          ' - duration: ${DateTime.now().difference(date).inMilliseconds}';
+
+      //Get md5 sum from Plugin
+      date = DateTime.now();
+      md5SumPlugin = await calculateMD5SumAsyncWithPlugin(dbPath);
+      md5SumPlugin +=
+          ' - duration: ${DateTime.now().difference(date).inMilliseconds}';
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      md5SumPlugin = 'Failed to get md5 from Crypto';
+      md5SumDart = 'Failed to get md5 from Plugin';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -47,8 +63,45 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _md5SumPlugin = md5SumPlugin;
+      _md5SumDart = md5SumDart;
     });
+  }
+
+  Future<String> calculateMD5SumAsyncWithPlugin(String filePath) async {
+    var ret = '';
+    var file = File(filePath);
+    if (await file.exists()) {
+      try {
+        ret = await Md5Plugin.getMD5WithPath(filePath);
+      } catch (exception) {
+        print('Unable to evaluate the MD5 sum :$exception');
+        return null;
+      }
+    } else {
+      print('`$filePath` does not exits so unable to evaluate its MD5 sum.');
+      return null;
+    }
+    return ret;
+  }
+
+  Future<String> calculateMD5SumAsyncWithCrypto(String filePath) async {
+    var ret = '';
+    var file = File(filePath);
+    if (await file.exists()) {
+      try {
+        var md5 = crypto.md5;
+        var hash = await md5.bind(file.openRead()).first;
+        ret = base64.encode(hash.bytes);
+      } catch (exception) {
+        print('Unable to evaluate the MD5 sum :$exception');
+        return null;
+      }
+    } else {
+      print('`$filePath` does not exits so unable to evaluate its MD5 sum.');
+      return null;
+    }
+    return ret;
   }
 
   @override
@@ -59,7 +112,16 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Container(
+            height: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('MD5 Plugin: $_md5SumPlugin\n'),
+                Text('MD5 Crypto: $_md5SumDart\n'),
+              ],
+            ),
+          ),
         ),
       ),
     );

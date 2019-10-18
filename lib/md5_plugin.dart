@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class Md5Plugin {
-  static const MethodChannel _channel = const MethodChannel('md5_plugin');
+  static const MethodChannel _channel = MethodChannel('md5_plugin');
 
-  static Future<String> getMD5WithPath(filePath) async {
-    Map<String, String> map = {
-      "file_path": filePath,
+  static Future<String> getMD5WithPath(String filePath) async {
+    var map = {
+      'file_path': filePath,
     };
-    final String checksum = await _channel.invokeMethod('getMD5', map);
+    var checksum = await _channel.invokeMethod<String>('getMD5', map);
     return checksum;
   }
 }
