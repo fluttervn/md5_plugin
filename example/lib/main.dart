@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(MyApp());
 
+///Root class for starting application
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
