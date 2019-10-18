@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/fluttervn/md5_plugin.svg?branch=master)](https://travis-ci.org/fluttervn/md5_plugin)
 # md5_plugin
 
-A Flutter plugin for getting the MD5 hash of the file. It's faster when compared with using crypto package (https://pub.dev/packages/crypto).
+A Flutter plugin for getting the MD5 hash of the file. It's faster when compared with using the crypto package (https://pub.dev/packages/crypto).
 You can check the difference in my example.
 
 ## Usage
