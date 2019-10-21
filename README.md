@@ -48,6 +48,7 @@ Future<String> calculateMD5SumAsyncWithCrypto(String filePath) async {
   }
 ```
 And the result:
+
 ![demo](screenshots/demo.png)
 
 ## Authors
