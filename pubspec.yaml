@@ -1,6 +1,6 @@
 name: md5_plugin
 description: A Flutter plugin for getting the MD5 hash of the file. It's faster when compared with using the crypto package (https://pub.dev/packages/crypto).
-version: 1.0.0
+version: 1.0.1
 author: An Lam <anlam12787@gmail.com>
 homepage: https://github.com/fluttervn/md5_plugin
 

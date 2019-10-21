@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/fluttervn/md5_plugin.svg?branch=master)](https://travis-ci.org/fluttervn/md5_plugin)
+[![Build Status](https://travis-ci.org/fluttervn/md5_plugin.svg?branch=master)](https://travis-ci.org/fluttervn/md5_plugin)[![Pub](https://img.shields.io/pub/v/md5_plugin)](https://pub.dev/packages/md5_plugin)
 # md5_plugin
 
 A Flutter plugin for getting the MD5 hash of the file. It's faster when compared with using the crypto package (https://pub.dev/packages/crypto).
@@ -47,8 +47,8 @@ Future<String> calculateMD5SumAsyncWithCrypto(String filePath) async {
     return ret;
   }
 ```
+And the result:
+![demo](screenshots/demo.png)
+
 ## Authors
 - [anlam87](https://github.com/anlam87) (anlam12787@gmail.com)
-
-
-
