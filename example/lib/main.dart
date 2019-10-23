@@ -30,13 +30,13 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String md5SumPlugin;
-    String md5SumDart;
+    String md5SumDartCrypto;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      //Create image
+      //Prepare image
       var directory = await getApplicationDocumentsDirectory();
-      var dbPath = join(directory.path, 'image.jpg');
-      var data = await rootBundle.load('assets/image.jpg');
+      var dbPath = join(directory.path, 'image1.jpg');
+      var data = await rootBundle.load('assets/image1.jpg');
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(dbPath).writeAsBytes(bytes);
@@ -44,18 +44,20 @@ class _MyAppState extends State<MyApp> {
 
       //Get md5 sum from Crypto
       var date = DateTime.now();
-      md5SumDart = await calculateMD5SumAsyncWithCrypto(dbPath);
-      md5SumDart +=
+      md5SumDartCrypto = await calculateMD5SumAsyncWithCrypto(dbPath);
+      print('md5SumDartCrypto: $md5SumDartCrypto');
+      md5SumDartCrypto +=
           ' - duration: ${DateTime.now().difference(date).inMilliseconds}';
 
       //Get md5 sum from Plugin
       date = DateTime.now();
       md5SumPlugin = await calculateMD5SumAsyncWithPlugin(dbPath);
+      print('md5SumPlugin: $md5SumPlugin');
       md5SumPlugin +=
           ' - duration: ${DateTime.now().difference(date).inMilliseconds}';
     } on PlatformException {
-      md5SumPlugin = 'Failed to get md5 from Crypto';
-      md5SumDart = 'Failed to get md5 from Plugin';
+      md5SumPlugin = 'Failed to get md5 from Plugin';
+      md5SumDartCrypto = 'Failed to get md5 from Crypto';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -65,7 +67,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _md5SumPlugin = md5SumPlugin;
-      _md5SumDart = md5SumDart;
+      _md5SumDart = md5SumDartCrypto;
     });
   }
 
